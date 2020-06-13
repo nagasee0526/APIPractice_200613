@@ -107,5 +107,8 @@ class SignUpActivity : baseActivity() {
 
         })
 
+        signUpBtn.setOnClickListener {
+
+        }
     }
 }
