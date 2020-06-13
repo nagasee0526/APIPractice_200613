@@ -1,5 +1,6 @@
 package com.ubis.apipractice_200613
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -115,24 +116,53 @@ class SignUpActivity : baseActivity() {
         })
 
         signUpBtn.setOnClickListener {
+            Log.d("message", "버튼 눌림")
             // 이메일 중복검사를 통과? + 닉네임 중복검사를 통과?
             if(!isEmailDuplOk) {
-                Toast.makeText(mContext, "이메일 중복검사를 통과해야 합니다.", Toast.LENGTH_SHORT)
+                runOnUiThread {
+                    Log.d("message", "이메일 중복")
+                    Toast.makeText(mContext, "이메일 중복검사를 통과해야 합니다.", Toast.LENGTH_SHORT).show()
+                }
                 return@setOnClickListener
             }
 
             if(!isNickNameDuplOk)
             {
-                Toast.makeText(mContext, "닉네임 중복검사를 통과해야 합니다.", Toast.LENGTH_SHORT)
+                runOnUiThread {
+                    Log.d("message", "닉네임 중복")
+                    Toast.makeText(mContext, "닉네임 중복검사를 통과해야 합니다.", Toast.LENGTH_SHORT).show()
+                }
                 return@setOnClickListener
             }
             //  이메일 닉네임 확인 통과
             // 서버에 가입신청
             val email = emailEdt.text.toString()
             val pw = passwordEdt.text.toString()
-            val ninkname = nickNameEdt.text.toString()
+            val nickname = nickNameEdt.text.toString()
 
             // 서버에 /user - put으로 요청 서버에 요청
+            ServerUtils.putRequestSigUp(mContext, email, pw, nickname, object : ServerUtils.jsonResponceHandler {
+                override fun onResponce(json: JSONObject) {
+
+                    val code = json.getInt("code")
+                    val message = json.getInt("message")
+
+                    if( code == 200 ){ // 회원 가입 성공
+                        runOnUiThread {
+                            Toast.makeText(mContext, "가입 성공", Toast.LENGTH_SHORT).show()
+                        }
+                        finish()
+                    }
+                    else { //  회원 가입 실패
+                        runOnUiThread {
+                            Toast.makeText(mContext, "${message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+
+            })
+
+
 
 
 

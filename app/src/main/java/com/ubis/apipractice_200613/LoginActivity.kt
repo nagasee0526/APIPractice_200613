@@ -47,11 +47,14 @@ class LoginActivity : baseActivity() {
 
                     val mData =json.getJSONObject("data")
                     val mUser = mData.getJSONObject("user")
-                    val mNick = mUser.getString("email")
+                    val mNick = mUser.getString("nick_name")
 
                     runOnUiThread {
                         Toast.makeText(mContext, "${mNick} 님 환영합니다.", Toast.LENGTH_SHORT).show()
                     }
+
+                    val myIntent = Intent(mContext, MainActivity::class.java)
+                    startActivity(myIntent)
                 }
                 else { // 로그인 실패 - 실패사유 message에 적힌 사유 확인
                     val message =json.getString("message")
