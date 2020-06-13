@@ -3,6 +3,7 @@ package com.ubis.apipractice_200613.utils
 import android.content.Context
 import android.util.Log
 import okhttp3.*
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.json.JSONObject
 import java.io.IOException
 import java.sql.ClientInfoStatus
@@ -14,6 +15,46 @@ class ServerUtils {
     companion object{
         // 어느서버로 가야하는지 적어두는 변수
         val BASE_URL = "http://15.165.177.142"
+
+         fun getRequestDuplicationCheck(context: Context, CheckType : String, inputVal : String, handler: jsonResponceHandler?){
+             val client = OkHttpClient()
+
+             //get방식은 어디로 갈지 주소 + 어떤데이터를 보낼지 같이 표시됨
+             // 주소만들때 데이터첨부까지 같이 진행
+             val urlbuilder = "${BASE_URL}/user_check".toHttpUrlOrNull()!!.newBuilder()
+             //만든 주소 변수에 파라미터를 첨부 한다.
+             urlbuilder.addEncodedQueryParameter("type", CheckType)
+             urlbuilder.addEncodedQueryParameter("value", inputVal)
+
+             val urlString = urlbuilder.build().toString()
+             Log.d("완성된 주소", urlString)
+
+             // request를 만들어서 최종 데이터 전송
+             val request = Request.Builder()
+                 .url(urlString)
+                 .get()
+             // head() // 헤더를 요구하면 첨부
+                 .build()
+
+             client.newCall(request).enqueue(object : Callback{
+                 override fun onFailure(call: Call, e: IOException) {
+                     // 서버에 연결자체를 실패 했을때
+                 }
+
+                 override fun onResponse(call: Call, response: Response) {
+                     // 서버에서 응답을 잘 받아왔을경우
+                     //응답중에서 body를  String 로 저장
+                     val bodyString = response.body!!.string()
+                     //저장한 String을 JSONObject 형식으로 가공
+                     val json = JSONObject(bodyString)
+                     // 화면에 만들어낸  json변수를 전달
+                     //  Log.d("Json응답", json.toString())
+                     handler?.onResponce(json)
+                 }
+
+             })
+
+         }
 
         //서버에 로그인 요청해주는 함수
         // context / handler 는 필수로 넣어두자

@@ -23,7 +23,7 @@ class LoginActivity : baseActivity() {
 
     override fun setEvents() {
 
-        loginBtn.setOnClickListener {
+        signUpBtn.setOnClickListener {
 
             val myIntent = Intent(mContext, SignUpActivity::class.java)
             startActivity(myIntent)
