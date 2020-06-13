@@ -25,7 +25,7 @@ class LoginActivity : baseActivity() {
         // 실제로 서버에서 두개의 변수를 전달해서 로그인 시도
         // 별개의 클래스 (ServerUtil)에 서버요철기능을 만들고 화면에서 이를 사용
 
-
+        ServerUtils.postRequestLogin(mContext, inputEmail, inputPw, null)
         }
     }
 
