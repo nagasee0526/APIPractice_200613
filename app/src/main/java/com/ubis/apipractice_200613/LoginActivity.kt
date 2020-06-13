@@ -1,8 +1,11 @@
 package com.ubis.apipractice_200613
 
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import com.ubis.apipractice_200613.utils.ServerUtils
 import kotlinx.android.synthetic.main.activity_login.*
+import org.json.JSONObject
 
 class LoginActivity : baseActivity() {
 
@@ -25,7 +28,29 @@ class LoginActivity : baseActivity() {
         // 실제로 서버에서 두개의 변수를 전달해서 로그인 시도
         // 별개의 클래스 (ServerUtil)에 서버요철기능을 만들고 화면에서 이를 사용
 
-        ServerUtils.postRequestLogin(mContext, inputEmail, inputPw, null)
+        ServerUtils.postRequestLogin(mContext, inputEmail, inputPw, object : ServerUtils.jsonResponceHandler{
+            override fun onResponce(json: JSONObject) {
+                Log.d("화면에서 보는 응답",  json.toString())
+                //응답내용을 분석 => 화면에 표현해주자
+
+                // 제일큰 중괄호에 달린 code라는 이름의 Int를 받아서 codeNum변수에 대입
+                val codeNum = json.getInt("code")
+
+                if( codeNum == 200) { // 로그인 성공
+
+                }
+                else { // 로그인 실패 - 실패사유 message에 적힌 사유 확인
+                    val message =json.getString("message")
+
+                    // 인터넷 연결 쓰레드가 아닌  UI 담당 쓰레드가 Toast를 띄운다
+                    runOnUiThread {
+                        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show()
+                    }
+
+                }
+            }
+
+        })
         }
     }
 
