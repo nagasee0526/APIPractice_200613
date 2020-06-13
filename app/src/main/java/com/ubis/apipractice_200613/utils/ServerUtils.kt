@@ -52,7 +52,7 @@ class ServerUtils {
                     //저장한 String을 JSONObject 형식으로 가공
                     val json = JSONObject(bodyString)
                     // 화면에 만들어낸  json변수를 전달
-                    Log.d("Json응답", json.toString())
+                  //  Log.d("Json응답", json.toString())
                     handler?.onResponce(json)
                 }
 

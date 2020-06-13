@@ -30,7 +30,7 @@ class LoginActivity : baseActivity() {
 
         ServerUtils.postRequestLogin(mContext, inputEmail, inputPw, object : ServerUtils.jsonResponceHandler{
             override fun onResponce(json: JSONObject) {
-                Log.d("화면에서 보는 응답",  json.toString())
+              //  Log.d("화면에서 보는 응답",  json.toString())
                 //응답내용을 분석 => 화면에 표현해주자
 
                 // 제일큰 중괄호에 달린 code라는 이름의 Int를 받아서 codeNum변수에 대입
@@ -38,6 +38,13 @@ class LoginActivity : baseActivity() {
 
                 if( codeNum == 200) { // 로그인 성공
 
+                    val mData =json.getJSONObject("data")
+                    val mUser = mData.getJSONObject("user")
+                    val mNick = mUser.getString("email")
+
+                    runOnUiThread {
+                        Toast.makeText(mContext, "${mNick} 님 환영합니다.", Toast.LENGTH_SHORT).show()
+                    }
                 }
                 else { // 로그인 실패 - 실패사유 message에 적힌 사유 확인
                     val message =json.getString("message")
