@@ -6,6 +6,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.EditText
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import com.ubis.apipractice_200613.utils.ServerUtils
 import kotlinx.android.synthetic.main.activity_sign_up.*
@@ -14,6 +15,8 @@ import java.util.*
 
 class SignUpActivity : baseActivity() {
 
+    var isEmailDuplOk = false
+    var isNickNameDuplOk = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +45,7 @@ class SignUpActivity : baseActivity() {
                         runOnUiThread {
                             emailCheckResultTxt.text = "사용해도 좋습니다."
                         }
+                        isEmailDuplOk = true
                     }
                     else {
                         runOnUiThread {
@@ -67,6 +71,7 @@ class SignUpActivity : baseActivity() {
                         runOnUiThread {
                             nickNameCheckResultTxt.text = "사용해도 좋습니다."
                         }
+                        isNickNameDuplOk = true
                     }
                     else {
                         runOnUiThread {
@@ -89,6 +94,7 @@ class SignUpActivity : baseActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 nickNameCheckResultTxt.text = "중복확인을 해주세요"
+                isNickNameDuplOk = false
 //                 Log.d("변경된내용", "${s}") // 변경된 문자열 출력
             }
 
@@ -102,13 +108,37 @@ class SignUpActivity : baseActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                nickNameCheckResultTxt.text = "중복확인을 해주세요"
+                emailCheckResultTxt.text = "중복확인을 해주세요"
+                isEmailDuplOk = false
             }
 
         })
 
         signUpBtn.setOnClickListener {
+            // 이메일 중복검사를 통과? + 닉네임 중복검사를 통과?
+            if(!isEmailDuplOk) {
+                Toast.makeText(mContext, "이메일 중복검사를 통과해야 합니다.", Toast.LENGTH_SHORT)
+                return@setOnClickListener
+            }
+
+            if(!isNickNameDuplOk)
+            {
+                Toast.makeText(mContext, "닉네임 중복검사를 통과해야 합니다.", Toast.LENGTH_SHORT)
+                return@setOnClickListener
+            }
+            //  이메일 닉네임 확인 통과
+            // 서버에 가입신청
+            val email = emailEdt.text.toString()
+            val pw = passwordEdt.text.toString()
+            val ninkname = nickNameEdt.text.toString()
+
+            // 서버에 /user - put으로 요청 서버에 요청
+
+
 
         }
+
+
+
     }
 }
