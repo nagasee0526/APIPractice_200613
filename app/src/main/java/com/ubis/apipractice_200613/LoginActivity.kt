@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import com.ubis.apipractice_200613.utils.ContextUtil
 import com.ubis.apipractice_200613.utils.ServerUtils
 import kotlinx.android.synthetic.main.activity_login.*
 import org.json.JSONObject
@@ -19,9 +20,16 @@ class LoginActivity : baseActivity() {
     }
 
     override fun setValues() {
+        // 자동로그인의 여부를 contextUtils에서 가져와 checkBox로 설정한다.
+        autoLoginCheckBox.isChecked = ContextUtil.isAutoLogin(mContext)
     }
 
     override fun setEvents() {
+
+        autoLoginCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
+            // isChexked에는 지금 어떤 상태가 되었는지 Boolean 으로 들어옴
+            ContextUtil.setAutoLogin(mContext, isChecked)
+        }
 
         signUpBtn.setOnClickListener {
 
@@ -42,25 +50,20 @@ class LoginActivity : baseActivity() {
 
                 // 제일큰 중괄호에 달린 code라는 이름의 Int를 받아서 codeNum변수에 대입
                 val codeNum = json.getInt("code")
+                val message = json.getString("message")
 
                 if( codeNum == 200) { // 로그인 성공
 
-                    val mData =json.getJSONObject("data")
-                    val mUser = mData.getJSONObject("user")
-                    val mNick = mUser.getString("nick_name")
+                    val data = json.getJSONObject("data")
+                    val token = data.getString("token")
 
-                    runOnUiThread {
-                        Toast.makeText(mContext, "${mNick} 님 환영합니다.", Toast.LENGTH_SHORT).show()
-                    }
-
-                    // 서버에서 내려주는 Tocken값을 SharedPreperence에 저장
+                    ContextUtil.setUserTocken(mContext, token)
+//                        로그인 성공 => 메인액티비티로 이동
 
                     val myIntent = Intent(mContext, MainActivity::class.java)
                     startActivity(myIntent)
                 }
                 else { // 로그인 실패 - 실패사유 message에 적힌 사유 확인
-                    val message =json.getString("message")
-
                     // 인터넷 연결 쓰레드가 아닌  UI 담당 쓰레드가 Toast를 띄운다
                     runOnUiThread {
                         Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show()

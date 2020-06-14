@@ -52,6 +52,11 @@
         android:inputType="textPassword"
         android:hint="비밀번호"/>
 
+    <CheckBox
+        android:id="@+id/autoLoginCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="자동로그인"/>
     <Button
         android:id="@+id/loginBtn"
         android:layout_width="match_parent"

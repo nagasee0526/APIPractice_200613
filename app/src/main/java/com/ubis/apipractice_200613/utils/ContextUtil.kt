@@ -6,10 +6,23 @@ class ContextUtil {
 
     companion object{
         //메모장 파일이름에 대응하는 개념의 변수
-        val prefName = "APIPracticePreference"
+        private val prefName = "APIPracticePreference"
 
         // 저장될 데이터 항목 이름들을 지정
-        val USER_TOCKEN = "USER_TOCKEN"
+        private val USER_TOCKEN = "USER_TOCKEN"
+        private val AUTO_LOGIN = "AUTO_LOGIN"
+
+        fun setAutoLogin(context: Context, autoLogin: Boolean){
+            val pref = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
+
+            pref.edit().putBoolean(AUTO_LOGIN, autoLogin).apply()
+        }
+
+        fun isAutoLogin(context: Context) : Boolean{
+            val pref = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
+
+            return pref.getBoolean(AUTO_LOGIN, false)
+        }
 
         // 토큰 저장 기능
         fun setUserTocken(context: Context, tocken:String) {
