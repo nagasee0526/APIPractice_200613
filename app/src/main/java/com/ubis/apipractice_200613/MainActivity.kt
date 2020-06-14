@@ -58,6 +58,9 @@ class MainActivity : baseActivity() {
                     }
                 }
 
+                runOnUiThread {
+                    topicAdapter.notifyDataSetChanged()
+                }
 
             }
 

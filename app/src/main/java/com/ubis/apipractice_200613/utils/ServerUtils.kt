@@ -16,8 +16,6 @@ class ServerUtils {
         // 어느서버로 가야하는지 적어두는 변수
         val BASE_URL = "http://15.165.177.142"
 
-
-
          fun getRequestDuplicationCheck(context: Context, CheckType : String, inputVal : String, handler: jsonResponceHandler?){
              val client = OkHttpClient()
 
@@ -29,7 +27,7 @@ class ServerUtils {
              urlbuilder.addEncodedQueryParameter("value", inputVal)
 
              val urlString = urlbuilder.build().toString()
-             Log.d("완성된 주소", urlString)
+             Log.d("DuplicationCheck 주소", urlString)
 
              // request를 만들어서 최종 데이터 전송
              val request = Request.Builder()
@@ -109,6 +107,7 @@ class ServerUtils {
 
             //어떤 기능을 수행하러 가는지 주소 완성 =>로그인 : http://15.165.177.142//user
             val urlString = "${BASE_URL}/user"
+            Log.d("putRequestSigUp 주소", urlString)
             //서버에 들고갈 데이터 첨부 intext putExtra와 비슷 =>POST FormData에 담자
             val formData = FormBody.Builder()
                 .add("email", email)
@@ -155,7 +154,7 @@ class ServerUtils {
 //        urlbuilder.addEncodedQueryParameter("value", inputVal)
 
             val urlString = urlbuilder.build().toString()
-            Log.d("완성된 주소", urlString)
+            Log.d("getRequestMyInfo 주소", urlString)
 
             // request를 만들어서 최종 데이터 전송
             val request = Request.Builder()
@@ -194,7 +193,7 @@ class ServerUtils {
 //        urlbuilder.addEncodedQueryParameter("value", inputVal)
 
             val urlString = urlbuilder.build().toString()
-            Log.d("완성된 주소", urlString)
+            Log.d("RequestV2MainInfo 주소", urlString)
 
             // request를 만들어서 최종 데이터 전송
             val request = Request.Builder()
@@ -216,6 +215,36 @@ class ServerUtils {
                     val json = JSONObject(bodyString)
                     // 화면에 만들어낸  json변수를 전달
                     Log.d("Json응답", json.toString())
+                    handler?.onResponce(json)
+                }
+
+            })
+        }
+
+        // 주제 아이디를 받아와야 한다
+        fun getRequestTopicDetail(context: Context, topicId:Int, handler: jsonResponceHandler?){
+            val client = OkHttpClient()
+
+            val urlbuilder = "${BASE_URL}/topic/${topicId}".toHttpUrlOrNull()!!.newBuilder()
+//        urlbuilder.addEncodedQueryParameter("type", CheckType)
+//        urlbuilder.addEncodedQueryParameter("value", inputVal)
+
+            val urlString = urlbuilder.build().toString()
+            Log.d("RequestTopicDetail 주소", urlString)
+
+            val request = Request.Builder()
+                .url(urlString)
+                .get()
+                .header("X-Http-Token", ContextUtil.getUserTocken(context)) // 헤더를 요구하면 첨부
+                .build()
+
+            client.newCall(request).enqueue(object : Callback{
+                override fun onFailure(call: Call, e: IOException) {
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    val bodyString = response.body!!.string()
+                    val json = JSONObject(bodyString)
                     handler?.onResponce(json)
                 }
 
