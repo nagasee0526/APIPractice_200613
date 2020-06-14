@@ -181,7 +181,45 @@ class ServerUtils {
                 }
 
             })
+        }
 
+        fun getRequestV2MainInfo(context: Context, handler: jsonResponceHandler?){
+            val client = OkHttpClient()
+
+            //get방식은 어디로 갈지 주소 + 어떤데이터를 보낼지 같이 표시됨
+            // 주소만들때 데이터첨부까지 같이 진행
+            val urlbuilder = "${BASE_URL}/v2/main_info".toHttpUrlOrNull()!!.newBuilder()
+            //만든 주소 변수에 파라미터를 첨부 한다.
+//        urlbuilder.addEncodedQueryParameter("type", CheckType)
+//        urlbuilder.addEncodedQueryParameter("value", inputVal)
+
+            val urlString = urlbuilder.build().toString()
+            Log.d("완성된 주소", urlString)
+
+            // request를 만들어서 최종 데이터 전송
+            val request = Request.Builder()
+                .url(urlString)
+                .get()
+                .header("X-Http-Token", ContextUtil.getUserTocken(context)) // 헤더를 요구하면 첨부
+                .build()
+
+            client.newCall(request).enqueue(object : Callback{
+                override fun onFailure(call: Call, e: IOException) {
+                    // 서버에 연결자체를 실패 했을때
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    // 서버에서 응답을 잘 받아왔을경우
+                    //응답중에서 body를  String 로 저장
+                    val bodyString = response.body!!.string()
+                    //저장한 String을 JSONObject 형식으로 가공
+                    val json = JSONObject(bodyString)
+                    // 화면에 만들어낸  json변수를 전달
+                    Log.d("Json응답", json.toString())
+                    handler?.onResponce(json)
+                }
+
+            })
         }
     }
 

@@ -12,7 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".topic_list_item"></activity>
+        <activity android:name=".ViewTopicDetailActivity"></activity>
+        <activity android:name=".topic_list_item" />
         <activity
             android:name=".SplashActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
