@@ -54,6 +54,12 @@ class ViewTopicDetailActivity : baseActivity() {
                         topicTitleTxt.text = mTopic.title
 
                         Glide.with(mContext).load(mTopic.imageUrl).into(topicImg)
+
+                        firstSideTxt.text = mTopic.sides[0].title
+                        firstSideTxt.text = mTopic.sides[1].title
+
+                        firstSideVoteCountTxt.text = "${mTopic.sides[0].voteCount}표"
+                        secondSideVoteCountTxt.text = "${mTopic.sides[1].voteCount}표"
                     }
                 }
 
@@ -64,5 +70,58 @@ class ViewTopicDetailActivity : baseActivity() {
     }
 
     override fun setEvents() {
+
+        voteToFirstBtn.setOnClickListener {
+            ServerUtils.postRequestVote(mContext, mTopic.sides[1].id, object : ServerUtils.jsonResponceHandler{
+                override fun onResponce(json: JSONObject) {
+
+                    val code = json.getInt("code")
+
+                    if(code == 200)
+                    {
+                        runOnUiThread {
+                            Toast.makeText(mContext, "투표에 참여해주셔서 감사합니다." , Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    else
+                    {
+                        val message = json.getString("message")
+
+                        runOnUiThread {
+                            Toast.makeText(mContext, message , Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                }
+
+            })
+        }
+
+        voteToScondBtn.setOnClickListener {
+            ServerUtils.postRequestVote(mContext, mTopic.sides[0].id, object : ServerUtils.jsonResponceHandler{
+                override fun onResponce(json: JSONObject) {
+
+                    val code = json.getInt("code")
+
+                    if(code == 200)
+                    {
+                        runOnUiThread {
+                            Toast.makeText(mContext, "투표에 참여해주셔서 감사합니다." , Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    else
+                    {
+                        val message = json.getString("message")
+
+                        runOnUiThread {
+                            Toast.makeText(mContext, message , Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+
+                }
+
+            })
+        }
     }
 }

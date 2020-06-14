@@ -1,5 +1,6 @@
 package com.ubis.apipractice_200613.datas
 
+import android.util.Log
 import org.json.JSONObject
 
 class Topic {
@@ -12,6 +13,16 @@ class Topic {
             topic.title =  json.getString("title")
             topic.imageUrl = json.getString("img_url")
 
+            val sides = json.getJSONArray("sides")
+
+            for(i in 0..sides.length()-1){
+                val sidejson = sides.getJSONObject(i)
+
+                val side = TopicSide.getTopicSideFromJson(sidejson)
+
+                topic.sides.add(side)
+            }
+
             return topic
         }
 
@@ -20,6 +31,7 @@ class Topic {
     var id = 0
     var title = ""
     var imageUrl = ""
+    val sides = ArrayList<TopicSide>()
 
 
 }
