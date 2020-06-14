@@ -53,6 +53,8 @@ class LoginActivity : baseActivity() {
                         Toast.makeText(mContext, "${mNick} 님 환영합니다.", Toast.LENGTH_SHORT).show()
                     }
 
+                    // 서버에서 내려주는 Tocken값을 SharedPreperence에 저장
+
                     val myIntent = Intent(mContext, MainActivity::class.java)
                     startActivity(myIntent)
                 }

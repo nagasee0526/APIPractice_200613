@@ -145,7 +145,7 @@ class SignUpActivity : baseActivity() {
                 override fun onResponce(json: JSONObject) {
 
                     val code = json.getInt("code")
-                    val message = json.getInt("message")
+                    val message = json.getString("message")
 
                     if( code == 200 ){ // 회원 가입 성공
                         runOnUiThread {
